@@ -1,0 +1,700 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{background:#F3F8F4;min-height:100vh;padding:24px;color:#1A2E22}
+.header{text-align:center;margin-bottom:28px;padding-top:8px}
+.header h1{font-size:21px;font-weight:700;color:#14532D;letter-spacing:-0.3px}
+.header p{font-size:13px;color:#5C7A66;margin-top:4px}
+
+.card{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,83,45,0.04)}
+.card-sm{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(20,83,45,0.04)}
+.label{font-size:11px;color:#5C7A66;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:8px}
+.big-num{font-size:28px;font-weight:700;color:#14532D;line-height:1}
+.sub-num{font-size:13px;color:#5C7A66;margin-top:4px}
+
+/* Ring */
+.ring-wrap{display:flex;justify-content:center;margin-bottom:24px}
+.ring-container{position:relative;width:190px;height:190px;display:flex;align-items:center;justify-content:center}
+.ring-text{text-align:center;position:absolute}
+.ring-day{font-size:38px;font-weight:800;color:#14532D;line-height:1}
+.ring-of{font-size:13px;color:#5C7A66;margin-top:2px}
+.ring-pct{font-size:12px;color:#16A34A;margin-top:4px;font-weight:700}
+.ring-svg{position:absolute;top:0;left:0}
+
+/* Streak */
+.streak-row{display:flex;gap:14px;margin-bottom:16px}
+.streak-card{flex:1;background:#FFFFFF;border:1px solid #DCEDE0;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 2px rgba(20,83,45,0.04)}
+.flame-icon{width:38px;height:38px;background:#FEF3C7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.flame-icon.best{background:#DCFCE7}
+.streak-num{font-size:23px;font-weight:700;color:#14532D}
+.streak-lbl{font-size:12px;color:#5C7A66}
+
+/* Quote card */
+.quote-card{background:linear-gradient(135deg,#16A34A 0%,#15803D 100%);border-radius:16px;padding:20px;margin-bottom:16px;color:#FFFFFF;position:relative;overflow:hidden}
+.quote-card::before{content:"\201C";position:absolute;top:-10px;right:14px;font-size:90px;color:rgba(255,255,255,0.12);font-family:Georgia,serif;line-height:1}
+.quote-label{font-size:11px;text-transform:uppercase;letter-spacing:0.6px;font-weight:700;color:#DCFCE7;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.quote-text{font-size:16px;font-weight:600;line-height:1.45;margin-bottom:14px;position:relative;z-index:1}
+.quote-footer{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.quote-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.quote-author{font-size:12px;font-weight:600;color:#FFFFFF}
+.quote-tag{font-size:11px;color:#DCFCE7;font-weight:500;opacity:0.9}
+.quote-refresh{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:7px 12px;color:#FFFFFF;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.15s;display:flex;align-items:center;gap:5px}
+.quote-refresh:hover{background:rgba(255,255,255,0.28)}
+.quote-refresh:active{transform:scale(0.96)}
+.quote-refresh svg{width:13px;height:13px}
+.quote-refresh.spin svg{animation:spin360 0.5s ease}
+@keyframes spin360{to{transform:rotate(180deg)}}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:12px;padding:14px}
+.stat-label{font-size:11px;color:#5C7A66;margin-bottom:4px;font-weight:500}
+.stat-val{font-size:20px;font-weight:700;color:#14532D}
+.stat-sub{font-size:11px;color:#5C7A66;margin-top:2px}
+
+.section-title{font-size:13px;font-weight:700;color:#14532D;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+
+/* Settings */
+.settings-card{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 1px 2px rgba(20,83,45,0.04)}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.field-label{font-size:11px;color:#5C7A66;margin-bottom:5px;font-weight:500}
+.field-input{width:100%;background:#F3F8F4;border:1px solid #DCEDE0;border-radius:8px;padding:8px 12px;color:#14532D;font-size:13px;font-family:var(--font-sans);outline:none}
+.field-input:focus{border-color:#16A34A;box-shadow:0 0 0 3px rgba(22,163,74,0.12)}
+.save-btn{background:#16A34A;border:none;border-radius:10px;padding:9px 20px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.15s}
+.save-btn:hover{background:#15803D}
+.save-btn:active{transform:scale(0.97)}
+
+/* Table */
+.table-wrap{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:16px;padding:0;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 2px rgba(20,83,45,0.04)}
+.table-header-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 0 20px}
+.day-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.day-table th{font-size:11px;color:#5C7A66;font-weight:600;text-align:left;padding:12px 16px;border-bottom:1px solid #E7F2EA;background:#FFFFFF;text-transform:uppercase;letter-spacing:0.4px}
+.day-table td{font-size:13px;color:#33503E;padding:10px 16px;border-bottom:1px solid #F0F7F2}
+.day-table tr:last-child td{border-bottom:none}
+.day-table tr:hover td{background:#F3F8F4}
+.solved-input{background:transparent;border:none;color:#14532D;font-size:13px;font-weight:600;width:52px;text-align:center;font-family:var(--font-sans);outline:none;border-bottom:1px solid #DCEDE0;padding:2px 4px}
+.solved-input:focus{border-bottom-color:#16A34A}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600}
+.badge-done{background:#DCFCE7;color:#15803D}
+.badge-partial{background:#FEF3C7;color:#B45309}
+.badge-empty{background:#F1F5F2;color:#8A9C92}
+
+/* Pagination */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid #E7F2EA;background:#FBFEFC}
+.pg-btn{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#15803D;cursor:pointer;transition:background 0.15s,opacity 0.15s;display:flex;align-items:center;gap:4px}
+.pg-btn:hover:not(:disabled){background:#F0FBF3}
+.pg-btn:disabled{opacity:0.4;cursor:not-allowed}
+.pg-pages{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.pg-page{min-width:30px;height:30px;border:1px solid transparent;border-radius:8px;background:transparent;font-size:12px;font-weight:600;color:#5C7A66;cursor:pointer;transition:background 0.15s}
+.pg-page:hover{background:#F0FBF3}
+.pg-page.active{background:#16A34A;color:#FFFFFF}
+.pg-info{font-size:12px;color:#5C7A66;font-weight:500}
+
+/* Heatmap */
+.heatmap-wrap{background:#FFFFFF;border:1px solid #DCEDE0;border-radius:16px;padding:22px;margin-bottom:16px;overflow-x:auto;box-shadow:0 1px 2px rgba(20,83,45,0.04)}
+.heatmap-grid{display:flex;gap:3px;flex-wrap:nowrap;padding-bottom:4px}
+.heatmap-col{display:flex;flex-direction:column;gap:3px}
+.heatmap-cell{width:13px;height:13px;border-radius:3px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
+.heatmap-cell:hover{transform:scale(1.35);box-shadow:0 0 0 1px rgba(20,83,45,0.35)}
+.heatmap-cell.pop{animation:popCell 0.4s ease}
+@keyframes popCell{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.heatmap-legend{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:11px;color:#5C7A66;flex-wrap:wrap}
+.legend-cell{width:11px;height:11px;border-radius:3px;display:inline-block}
+.tooltip{position:absolute;background:#14532D;border-radius:8px;padding:6px 10px;font-size:11px;color:#FFFFFF;pointer-events:none;white-space:nowrap;z-index:99;display:none;font-weight:500;box-shadow:0 4px 12px rgba(20,83,45,0.25)}
+
+.confetti-burst{position:absolute;pointer-events:none;font-size:20px;animation:burst 0.8s ease-out forwards;z-index:200}
+@keyframes burst{0%{opacity:1;transform:scale(0.5) translateY(0)}100%{opacity:0;transform:scale(1.5) translateY(-40px)}}
+
+.celebrate-flash{animation:flashGreen 0.6s ease}
+@keyframes flashGreen{0%{background:#DCFCE7}100%{background:transparent}}
+
+@media (max-width:480px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .settings-grid{grid-template-columns:1fr}
+  .ring-container{width:160px;height:160px}
+}
+</style>
+
+<div class="app" id="app">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">100 Days UWorld Challenge dashboard — track your daily question solving streak and progress.</h2>
+
+<div class="header">
+  <h1>🌱 100 Days UWorld Challenge</h1>
+  <p>Stay consistent. Pass the boards.</p>
+</div>
+
+<!-- 1. Circular Day Progress Ring -->
+<div class="ring-wrap">
+  <div class="ring-container" id="ringContainer">
+    <svg class="ring-svg" width="190" height="190" viewBox="0 0 190 190" aria-hidden="true">
+      <circle cx="95" cy="95" r="82" fill="none" stroke="#E7F2EA" stroke-width="11"/>
+      <circle id="ringArc" cx="95" cy="95" r="82" fill="none" stroke="#16A34A" stroke-width="11"
+        stroke-linecap="round" stroke-dasharray="515" stroke-dashoffset="515"
+        transform="rotate(-90 95 95)" style="transition:stroke-dashoffset 0.8s ease"/>
+    </svg>
+    <div class="ring-text">
+      <div class="ring-day" id="ringDay">0</div>
+      <div class="ring-of">of <span id="ringTotal">100</span> days</div>
+      <div class="ring-pct" id="ringPct">0% complete</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Current Streak Card -->
+<div class="streak-row">
+  <div class="streak-card">
+    <div class="flame-icon">🔥</div>
+    <div class="streak-info">
+      <div class="streak-num" id="curStreak">0</div>
+      <div class="streak-lbl">current streak</div>
+    </div>
+  </div>
+  <div class="streak-card">
+    <div class="flame-icon best">⚡</div>
+    <div class="streak-info">
+      <div class="streak-num" id="bestStreak">0</div>
+      <div class="streak-lbl">longest streak</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Quote of the Day -->
+<div class="quote-card">
+  <div class="quote-label">🌿 Quote of the Day</div>
+  <div class="quote-text" id="quoteText">Loading...</div>
+  <div class="quote-footer">
+    <div class="quote-meta">
+      <div class="quote-author" id="quoteAuthor">—</div>
+      <div class="quote-tag" id="quoteTag">Discipline</div>
+    </div>
+    <button class="quote-refresh" id="quoteRefreshBtn" onclick="refreshQuote()" aria-label="Show another quote">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      New quote
+    </button>
+  </div>
+</div>
+
+<!-- 4. Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total solved</div>
+    <div class="stat-val" id="statTotal">0</div>
+    <div class="stat-sub">questions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Daily average</div>
+    <div class="stat-val" id="statAvg">0</div>
+    <div class="stat-sub">questions/day</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Completion rate</div>
+    <div class="stat-val" id="statRate">0%</div>
+    <div class="stat-sub">of target days</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Days remaining</div>
+    <div class="stat-val" id="statRemaining">100</div>
+    <div class="stat-sub" id="statFinish">–</div>
+  </div>
+</div>
+
+<div class="settings-card">
+  <div class="section-title">Challenge settings</div>
+  <div class="settings-grid">
+    <div>
+      <div class="field-label">Total days</div>
+      <input class="field-input" type="number" id="setDays" value="100" min="1" max="365"/>
+    </div>
+    <div>
+      <div class="field-label">Target questions/day</div>
+      <input class="field-input" type="number" id="setTarget" value="40" min="1" max="500"/>
+    </div>
+    <div>
+      <div class="field-label">Start date</div>
+      <input class="field-input" type="date" id="setStart"/>
+    </div>
+  </div>
+  <button class="save-btn" onclick="saveSettings()">Save settings</button>
+</div>
+
+<!-- 5. Daily Tasks Table (paginated, all days editable) -->
+<div class="table-wrap">
+  <div class="table-header-bar">
+    <div class="section-title" style="margin-bottom:0">Daily log</div>
+    <div class="pg-info" id="pgInfoTop"></div>
+  </div>
+  <table class="day-table" id="dayTable">
+    <thead>
+      <tr>
+        <th style="width:48px">Day</th>
+        <th>Date</th>
+        <th style="width:60px">Target</th>
+        <th style="width:70px">Solved</th>
+        <th style="width:80px">Status</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="pagination-bar">
+    <button class="pg-btn" id="prevBtn" onclick="changePage(-1)">‹ Prev</button>
+    <div class="pg-pages" id="pgPages"></div>
+    <button class="pg-btn" id="nextBtn" onclick="changePage(1)">Next ›</button>
+  </div>
+</div>
+
+<!-- 6. GitHub-style Heatmap -->
+<div class="heatmap-wrap">
+  <div class="section-title">Activity heatmap</div>
+  <div class="heatmap-grid" id="heatmap"></div>
+  <div class="heatmap-legend">
+    <span>Less</span>
+    <span class="legend-cell" style="background:#EBEDF0"></span>
+    <span class="legend-cell" style="background:#9BE9A8"></span>
+    <span class="legend-cell" style="background:#40C463"></span>
+    <span class="legend-cell" style="background:#30A14E"></span>
+    <span class="legend-cell" style="background:#216E39"></span>
+    <span>More</span>
+    <span style="margin-left:14px;color:#8A9C92">0 = none · 1–10 = light · 11–20 = medium · 21–40 = dark · 40+ = darkest</span>
+  </div>
+</div>
+
+<div id="tooltip" class="tooltip"></div>
+</div>
+
+<script>
+const STORE_KEY = 'uworld100_v4';
+const PAGE_SIZE = 10;
+let currentPage = 1;
+let state = loadState();
+
+function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+    if(s&&s.days&&s.target&&s.totalDays) return s;
+  }catch(e){}
+  // migrate from old key if present
+  try{
+    const old=JSON.parse(localStorage.getItem('uworld100_v3')||'null');
+    if(old&&old.days&&old.target&&old.totalDays) return old;
+  }catch(e){}
+  const today=new Date();
+  const yyyy=today.getFullYear();
+  const mm=String(today.getMonth()+1).padStart(2,'0');
+  const dd=String(today.getDate()).padStart(2,'0');
+  return{totalDays:100,target:40,startDate:`${yyyy}-${mm}-${dd}`,days:Array.from({length:100},(_,i)=>({solved:i<3?[40,25,0][i]??0:0}))};
+}
+
+function saveState(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}
+}
+
+function getDateForDay(i){
+  const d=new Date(state.startDate+'T00:00:00');
+  d.setDate(d.getDate()+i);
+  return d;
+}
+
+function fmt(d){
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function fmtFull(d){
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function computeStreaks(){
+  let best=0,run=0;
+  for(let i=0;i<state.days.length;i++){
+    if(state.days[i].solved>=state.target){run++;best=Math.max(best,run);}
+    else run=0;
+  }
+  run=0;
+  for(let i=state.days.length-1;i>=0;i--){
+    if(state.days[i].solved>=state.target) run++;
+    else break;
+  }
+  return{cur:run,best};
+}
+
+function renderRing(){
+  const completed=state.days.filter(d=>d.solved>=state.target).length;
+  const pct=Math.round((completed/state.totalDays)*100);
+  const circumference=2*Math.PI*82;
+  const offset=circumference-(circumference*(pct/100));
+  document.getElementById('ringArc').style.strokeDasharray=circumference;
+  document.getElementById('ringArc').style.strokeDashoffset=offset;
+  document.getElementById('ringDay').textContent=completed;
+  document.getElementById('ringTotal').textContent=state.totalDays;
+  document.getElementById('ringPct').textContent=pct+'% complete';
+}
+
+function renderStats(){
+  const total=state.days.reduce((a,d)=>a+d.solved,0);
+  const activeDays=state.days.filter(d=>d.solved>0).length||1;
+  const completed=state.days.filter(d=>d.solved>=state.target).length;
+  const rate=Math.round((completed/state.totalDays)*100);
+  const remaining=state.totalDays-completed;
+  const finishDate=getDateForDay(state.totalDays-1);
+  document.getElementById('statTotal').textContent=total.toLocaleString();
+  document.getElementById('statAvg').textContent=Math.round(total/activeDays);
+  document.getElementById('statRate').textContent=rate+'%';
+  document.getElementById('statRemaining').textContent=remaining;
+  document.getElementById('statFinish').textContent='Est. finish: '+fmtFull(finishDate);
+  const {cur,best}=computeStreaks();
+  document.getElementById('curStreak').textContent=cur;
+  document.getElementById('bestStreak').textContent=best;
+}
+
+// GitHub-exact 5-bucket scale
+function heatColor(solved){
+  if(solved===0) return '#EBEDF0';
+  if(solved<=10) return '#9BE9A8';
+  if(solved<=20) return '#40C463';
+  if(solved<=40) return '#30A14E';
+  return '#216E39';
+}
+
+function renderHeatmap(){
+  const hm=document.getElementById('heatmap');
+  hm.innerHTML='';
+  const cols=Math.ceil(state.totalDays/7);
+  for(let c=0;c<cols;c++){
+    const col=document.createElement('div');
+    col.className='heatmap-col';
+    for(let r=0;r<7;r++){
+      const idx=c*7+r;
+      const cell=document.createElement('div');
+      cell.className='heatmap-cell';
+      cell.dataset.idx=idx;
+      if(idx<state.totalDays){
+        const d=state.days[idx];
+        cell.style.background=heatColor(d.solved);
+        const dt=fmtFull(getDateForDay(idx));
+        cell.addEventListener('mouseenter',e=>{
+          const tt=document.getElementById('tooltip');
+          tt.textContent=`Solved ${d.solved} questions on ${dt}`;
+          tt.style.display='block';
+          tt.style.left=(e.pageX+12)+'px';
+          tt.style.top=(e.pageY-28)+'px';
+        });
+        cell.addEventListener('mousemove',e=>{
+          const tt=document.getElementById('tooltip');
+          tt.style.left=(e.pageX+12)+'px';
+          tt.style.top=(e.pageY-28)+'px';
+        });
+        cell.addEventListener('mouseleave',()=>{
+          document.getElementById('tooltip').style.display='none';
+        });
+      } else {
+        cell.style.background='transparent';
+        cell.style.cursor='default';
+      }
+      col.appendChild(cell);
+    }
+    hm.appendChild(col);
+  }
+}
+
+function pulseHeatCell(idx){
+  const cell=document.querySelector(`.heatmap-cell[data-idx="${idx}"]`);
+  if(cell){
+    cell.classList.remove('pop');
+    void cell.offsetWidth;
+    cell.classList.add('pop');
+  }
+}
+
+function totalPages(){
+  return Math.max(1,Math.ceil(state.totalDays/PAGE_SIZE));
+}
+
+function renderTable(){
+  const tbody=document.getElementById('tableBody');
+  tbody.innerHTML='';
+  const tp=totalPages();
+  if(currentPage>tp) currentPage=tp;
+  if(currentPage<1) currentPage=1;
+  const startIdx=(currentPage-1)*PAGE_SIZE;
+  const endIdx=Math.min(startIdx+PAGE_SIZE,state.totalDays);
+
+  for(let i=startIdx;i<endIdx;i++){
+    const d=state.days[i];
+    const dt=fmt(getDateForDay(i));
+    let badge='';
+    if(d.solved>=state.target) badge='<span class="badge badge-done">✓ Done</span>';
+    else if(d.solved>0) badge='<span class="badge badge-partial">– Partial</span>';
+    else badge='<span class="badge badge-empty">–</span>';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:#16A34A;font-weight:700">${i+1}</td><td style="color:#33503E">${dt}</td><td style="color:#8A9C92">${state.target}</td><td><input class="solved-input" type="number" min="0" max="9999" value="${d.solved}" data-idx="${i}" aria-label="Questions solved day ${i+1}"/></td><td>${badge}</td>`;
+    tbody.appendChild(tr);
+    tr.querySelector('.solved-input').addEventListener('change',function(){
+      const idx=parseInt(this.dataset.idx);
+      const val=Math.max(0,parseInt(this.value)||0);
+      this.value=val;
+      state.days[idx].solved=val;
+      saveState();
+      pulseHeatCell(idx);
+      if(val>=state.target) celebrate(this);
+      renderRing();
+      renderStats();
+      renderHeatmap();
+      renderTableBadgesOnly();
+    });
+  }
+  renderPagination();
+  document.getElementById('pgInfoTop').textContent=`Day ${startIdx+1}–${endIdx} of ${state.totalDays}`;
+}
+
+// lightweight refresh that keeps page position (used after inline edits so inputs don't lose focus on every keystroke change)
+function renderTableBadgesOnly(){
+  renderTable();
+}
+
+function renderPagination(){
+  const tp=totalPages();
+  document.getElementById('prevBtn').disabled = currentPage<=1;
+  document.getElementById('nextBtn').disabled = currentPage>=tp;
+  const pagesWrap=document.getElementById('pgPages');
+  pagesWrap.innerHTML='';
+
+  const pageNumbers=getPageNumbers(currentPage,tp);
+  pageNumbers.forEach(p=>{
+    if(p==='...'){
+      const span=document.createElement('span');
+      span.textContent='…';
+      span.style.color='#8A9C92';
+      span.style.padding='0 4px';
+      span.style.fontSize='12px';
+      span.style.display='flex';
+      span.style.alignItems='center';
+      pagesWrap.appendChild(span);
+    } else {
+      const btn=document.createElement('button');
+      btn.className='pg-page'+(p===currentPage?' active':'');
+      btn.textContent=p;
+      btn.setAttribute('aria-label','Go to page '+p+' (days '+((p-1)*PAGE_SIZE+1)+'–'+Math.min(p*PAGE_SIZE,state.totalDays)+')');
+      btn.addEventListener('click',()=>{currentPage=p;renderTable();});
+      pagesWrap.appendChild(btn);
+    }
+  });
+}
+
+function getPageNumbers(cur,total){
+  const pages=[];
+  const windowSize=1;
+  for(let i=1;i<=total;i++){
+    if(i===1||i===total||Math.abs(i-cur)<=windowSize){
+      pages.push(i);
+    } else if(pages[pages.length-1]!=='...'){
+      pages.push('...');
+    }
+  }
+  return pages;
+}
+
+function changePage(delta){
+  const tp=totalPages();
+  currentPage=Math.min(tp,Math.max(1,currentPage+delta));
+  renderTable();
+}
+
+function celebrate(el){
+  const rect=el.getBoundingClientRect();
+  const emojis=['✨','🌟','🎯'];
+  emojis.forEach((e,i)=>{
+    const span=document.createElement('div');
+    span.className='confetti-burst';
+    span.textContent=e;
+    span.style.left=(rect.left+Math.random()*40-20+window.scrollX)+'px';
+    span.style.top=(rect.top+window.scrollY)+'px';
+    span.style.animationDelay=(i*80)+'ms';
+    document.body.appendChild(span);
+    setTimeout(()=>span.remove(),900);
+  });
+  const row=el.closest('tr');
+  if(row){
+    row.classList.remove('celebrate-flash');
+    void row.offsetWidth;
+    row.classList.add('celebrate-flash');
+  }
+}
+
+function renderAll(){
+  renderRing();
+  renderStats();
+  renderHeatmap();
+  renderTable();
+}
+
+function saveSettings(){
+  const days=Math.max(1,parseInt(document.getElementById('setDays').value)||100);
+  const target=Math.max(1,parseInt(document.getElementById('setTarget').value)||40);
+  const start=document.getElementById('setStart').value||state.startDate;
+  const prev=state.days;
+  state.totalDays=days;
+  state.target=target;
+  state.startDate=start;
+  if(days>prev.length){
+    for(let i=prev.length;i<days;i++) state.days.push({solved:0});
+  } else {
+    state.days=state.days.slice(0,days);
+  }
+  currentPage=1;
+  saveState();
+  renderAll();
+}
+
+document.getElementById('setDays').value=state.totalDays;
+document.getElementById('setTarget').value=state.target;
+document.getElementById('setStart').value=state.startDate;
+
+/* ---------------- Quote of the Day ---------------- */
+// Real, attributed quotes — discipline, consistency, hard work, and delayed gratification.
+const QUOTES=[
+{q:"Discipline is the bridge between goals and accomplishment.",a:"Jim Rohn",t:"Discipline"},
+{q:"We must all suffer one of two things: the pain of discipline or the pain of regret.",a:"Jim Rohn",t:"Discipline"},
+{q:"Discipline is just doing the same thing the right way whether anyone's watching or not.",a:"Michael J. Fox",t:"Discipline"},
+{q:"Discipline yourself, and others won't need to.",a:"John Wooden",t:"Discipline"},
+{q:"Self-respect is the fruit of discipline; the sense of dignity grows with the ability to say no to oneself.",a:"Abraham Joshua Heschel",t:"Discipline"},
+{q:"A disciplined mind leads to happiness, and an undisciplined mind leads to suffering.",a:"Dalai Lama",t:"Discipline"},
+{q:"Small disciplines repeated with consistency every day lead to great achievements gained slowly over time.",a:"John C. Maxwell",t:"Discipline"},
+{q:"Motivation gets you going, but discipline keeps you growing.",a:"John C. Maxwell",t:"Discipline"},
+{q:"True freedom is impossible without a mind made free by discipline.",a:"Mortimer J. Adler",t:"Discipline"},
+{q:"No man is free who is not master of himself.",a:"Epictetus",t:"Discipline"},
+{q:"Through discipline comes freedom.",a:"Aristotle",t:"Discipline"},
+{q:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"Aristotle",t:"Discipline"},
+{q:"Only the disciplined ones in life are free. The undisciplined are slaves to their moods and passions.",a:"Eliud Kipchoge",t:"Discipline"},
+{q:"Discipline equals freedom.",a:"Jocko Willink",t:"Discipline"},
+{q:"How would the person I wish to be act today?",a:"James Clear",t:"Discipline"},
+{q:"Amateurs get distracted. The pros just keep going.",a:"Maxime Lagacé",t:"Discipline"},
+{q:"The more self-discipline you have, the happier your future self will be.",a:"Maxime Lagacé",t:"Discipline"},
+{q:"Discipline comes from needs, not wants.",a:"Jack Butcher",t:"Discipline"},
+{q:"Discipline is remembering what you want.",a:"David Campbell",t:"Discipline"},
+{q:"Without self-discipline, success is impossible, period.",a:"Lou Holtz",t:"Discipline"},
+{q:"Self-discipline is the master key to riches.",a:"Napoleon Hill",t:"Discipline"},
+{q:"No man is free who cannot command himself.",a:"Pythagoras",t:"Discipline"},
+{q:"Most people don't have a talent problem. They have a consistency problem.",a:"Nicolas Cole",t:"Consistency"},
+{q:"Standards become habits. Habits become outcomes.",a:"Shane Parrish",t:"Discipline"},
+{q:"Day by day, what you choose, what you think and what you do is who you become.",a:"Heraclitus",t:"Discipline"},
+{q:"Discipline is consistency of action.",a:"James C. Collins",t:"Consistency"},
+{q:"Success isn't always about greatness. It's about consistency.",a:"Dwayne Johnson",t:"Consistency"},
+{q:"Successful people do ordinary things with extraordinary consistency, commitment, and focus.",a:"Anonymous",t:"Consistency"},
+{q:"Success is the sum of small efforts, repeated day in and day out.",a:"Robert Collier",t:"Consistency"},
+{q:"The hallmark of excellence, the test of greatness, is consistency.",a:"Jim Tressel",t:"Consistency"},
+{q:"You have to perform at a consistently higher level than others. That's the mark of a true professional.",a:"Anonymous",t:"Consistency"},
+{q:"Consistency beats inspiration.",a:"Daniel Pink",t:"Consistency"},
+{q:"What does it take to develop consistency? A system and the discipline to follow through.",a:"John C. Maxwell",t:"Consistency"},
+{q:"Just a few acts of self-discipline, practiced daily, over a reasonable period of time.",a:"Jim Rohn",t:"Consistency"},
+{q:"The compound effect is the principle of reaping huge rewards from a series of small, smart choices.",a:"Darren Hardy",t:"Consistency"},
+{q:"Consistency requires discipline. Force yourself out the door.",a:"Bob Glover",t:"Consistency"},
+{q:"Writing every day will make you a writer. The same logic applies to any craft.",a:"Anonymous, paraphrased from common writing advice",t:"Consistency"},
+{q:"Success is nothing more than a few disciplines, practiced every single day.",a:"Mel Robbins",t:"Consistency"},
+{q:"It does not matter how slowly you go so long as you do not stop.",a:"Confucius",t:"Consistency"},
+{q:"Continuous effort, not strength or intelligence, is the key to unlocking our potential.",a:"Winston Churchill",t:"Hard Work"},
+{q:"Perseverance is not a long race; it is many short races one after the other.",a:"Walter Elliot",t:"Hard Work"},
+{q:"A little more persistence, a little more effort, and what seemed hopeless failure may turn to glorious success.",a:"Elbert Hubbard",t:"Hard Work"},
+{q:"Most of the important things in the world have been accomplished by people who kept on trying when there seemed to be no hope.",a:"Dale Carnegie",t:"Hard Work"},
+{q:"The most certain way to succeed is always to try just one more time.",a:"Thomas Edison",t:"Hard Work"},
+{q:"There is no substitute for hard work.",a:"Thomas Edison",t:"Hard Work"},
+{q:"I have not failed. I've just found 10,000 ways that won't work.",a:"Thomas Edison",t:"Hard Work"},
+{q:"Nothing ever comes to one that is worth having except as a result of hard work.",a:"Booker T. Washington",t:"Hard Work"},
+{q:"A dream doesn't become reality through magic; it takes sweat, determination, and hard work.",a:"Colin Powell",t:"Hard Work"},
+{q:"There are no secrets to success. It is the result of preparation, hard work, and learning from failure.",a:"Colin Powell",t:"Hard Work"},
+{q:"Plans are only good intentions unless they immediately degenerate into hard work.",a:"Peter Drucker",t:"Hard Work"},
+{q:"The future depends on what you do today.",a:"Mahatma Gandhi",t:"Hard Work"},
+{q:"Winners embrace hard work. They love the discipline of it.",a:"Lou Holtz",t:"Hard Work"},
+{q:"No matter what your ability is, effort is what ignites that ability and turns it into accomplishment.",a:"Carol S. Dweck",t:"Hard Work"},
+{q:"The work you put in when no one is watching will matter far more than the work you do when the cameras are rolling.",a:"Leslie Odom Jr.",t:"Hard Work"},
+{q:"Nothing worthwhile comes easily. Half effort does not produce half results. It produces no results.",a:"Hamilton Holt",t:"Hard Work"},
+{q:"Talent is cheaper than table salt. What separates the talented individual from the successful one is a lot of hard work.",a:"Stephen King",t:"Hard Work"},
+{q:"There is no royal road to anything worthwhile.",a:"J. Reuben Clark",t:"Hard Work"},
+{q:"Working hard overcomes a whole lot of other obstacles.",a:"Marsha Evans",t:"Hard Work"},
+{q:"Everything is hard before it is easy.",a:"Anonymous",t:"Hard Work"},
+{q:"There are no shortcuts to any place worth going.",a:"Beverly Sills",t:"Hard Work"},
+{q:"Opportunity is missed by most people because it is dressed in overalls and looks like work.",a:"Thomas Edison",t:"Hard Work"},
+{q:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill",t:"Hard Work"},
+{q:"Without hard work, nothing grows but weeds.",a:"Gordon B. Hinckley",t:"Hard Work"},
+{q:"It takes twenty years of hard work to become an overnight success.",a:"Diana Rankin",t:"Hard Work"},
+{q:"There is simply no substitute for hard work when it comes to achieving success.",a:"Heather Bresch",t:"Hard Work"},
+{q:"Hard work without talent is a shame, but talent without hard work is a tragedy.",a:"Robert Half",t:"Hard Work"},
+{q:"Striving for success without hard work is like trying to harvest where you haven't planted.",a:"David Bly",t:"Hard Work"},
+{q:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson",t:"Hard Work"},
+{q:"The harder you work, the luckier you get.",a:"Gary Player",t:"Hard Work"},
+{q:"I'm a great believer in luck, and I find the harder I work, the more I have of it.",a:"Thomas Jefferson",t:"Hard Work"},
+{q:"Capacity to delay gratification is one of the best predictors of later success in life.",a:"Walter Mischel",t:"Delayed Gratification"},
+{q:"The ability to discipline yourself to delay gratification in the short term is the indispensable prerequisite for success.",a:"Brian Tracy",t:"Delayed Gratification"},
+{q:"Maturity is the ability to postpone gratification.",a:"Sigmund Freud",t:"Delayed Gratification"},
+{q:"Never give up what you want most for what you want today.",a:"Neal A. Maxwell",t:"Delayed Gratification"},
+{q:"The most powerful outcomes are delayed.",a:"James Clear",t:"Delayed Gratification"},
+{q:"It's waiting that helps you as an investor. If you didn't get the deferred-gratification gene, you've got to work hard to overcome it.",a:"Charlie Munger",t:"Delayed Gratification"},
+{q:"Most of the gains in life come from suffering in the short term so you can get paid in the long term.",a:"Naval Ravikant",t:"Delayed Gratification"},
+{q:"The professional understands delayed gratification. He is the tortoise, not the hare.",a:"Steven Pressfield",t:"Delayed Gratification"},
+{q:"Be careful not to compromise what you want most for what you want now.",a:"Anonymous",t:"Delayed Gratification"},
+{q:"Patience expands your options. If you insist on immediate gratification, your choices are severely limited.",a:"Ralph Marston",t:"Delayed Gratification"},
+{q:"Giving up on our long-term goals for immediate gratification is procrastination.",a:"Dan Ariely",t:"Delayed Gratification"},
+{q:"Comfort addicts us to instant gratification and short-term pleasure.",a:"Michael Easter",t:"Delayed Gratification"},
+{q:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln, popular attribution",t:"Delayed Gratification"},
+{q:"Do not save what is left after spending; spend what is left after saving.",a:"Warren Buffett",t:"Delayed Gratification"},
+{q:"Compound interest is the eighth wonder of the world.",a:"widely attributed to Albert Einstein",t:"Delayed Gratification"},
+{q:"The surest sign of an adult is the ability to accept delayed gratification.",a:"Tommy Tomlinson",t:"Delayed Gratification"},
+{q:"Lifetime regrets are more painful than delayed gratification.",a:"Dawn Graham",t:"Delayed Gratification"},
+{q:"Emotional self-control, delaying gratification and stifling impulsiveness, underlies accomplishment of every sort.",a:"Daniel Goleman",t:"Delayed Gratification"},
+{q:"Have the willpower to focus on long-term success instead of instant gratification.",a:"Jaspreet Singh",t:"Delayed Gratification"},
+{q:"Self-discipline is often disguised as short-term pain, which leads to long-term gains.",a:"Charles F. Glassman",t:"Delayed Gratification"},
+{q:"Continuous improvement is better than delayed perfection.",a:"Mark Twain",t:"Delayed Gratification"},
+{q:"Rule your mind, or it will rule you.",a:"Horace",t:"Discipline"},
+{q:"Self-control is the chief element in self-respect, and self-respect is the chief element in courage.",a:"Thucydides",t:"Discipline"},
+{q:"There's nothing more powerful than paying attention.",a:"Jordan Peterson",t:"Discipline"},
+{q:"The successful among us delay gratification. The successful among us bargain with the future.",a:"Jordan Peterson",t:"Delayed Gratification"},
+{q:"Don't wish it were easier. Wish you were better.",a:"Jim Rohn",t:"Hard Work"},
+{q:"Action isn't just the effect of motivation; it's also the cause of it.",a:"Mark Manson",t:"Discipline"},
+{q:"You have power over your mind, not outside events. Realize this, and you will find strength.",a:"Marcus Aurelius",t:"Discipline"},
+{q:"Difficulties strengthen the mind, as labor does the body.",a:"Seneca",t:"Hard Work"},
+{q:"While we are postponing, life speeds by.",a:"Seneca",t:"Delayed Gratification"},
+{q:"Don't put off until tomorrow what you can do today.",a:"Benjamin Franklin",t:"Delayed Gratification"},
+{q:"Discipline is about facing your fears so you can conquer them.",a:"Jocko Willink",t:"Discipline"},
+{q:"The pain of discipline is far less than the pain of regret.",a:"Sarah Bombell",t:"Discipline"},
+{q:"The secret of success is consistency of purpose.",a:"Benjamin Disraeli",t:"Consistency"},
+{q:"The difference between who you are and who you want to be is what you do.",a:"Charles Duhigg",t:"Discipline"},
+{q:"Learn to convert the discomfort of discipline into the satisfaction of personal growth.",a:"Tony Robbins",t:"Discipline"},
+{q:"An idiot with a plan can beat a genius without one.",a:"Warren Buffett",t:"Discipline"},
+{q:"Avoid things the best version of yourself will regret.",a:"Shane Parrish",t:"Discipline"}
+];
+
+function dayOfYear(d){
+  const start=new Date(d.getFullYear(),0,0);
+  const diff=d-start;
+  return Math.floor(diff/86400000);
+}
+
+function getQuoteIndexForToday(){
+  const today=new Date();
+  const seed=today.getFullYear()*1000+dayOfYear(today);
+  return seed%QUOTES.length;
+}
+
+let lastQuoteIdx=-1;
+
+function setQuote(idx){
+  const item=QUOTES[idx];
+  document.getElementById('quoteText').textContent='"'+item.q+'"';
+  document.getElementById('quoteAuthor').textContent='— '+item.a;
+  document.getElementById('quoteTag').textContent=item.t;
+  lastQuoteIdx=idx;
+}
+
+function refreshQuote(){
+  let idx;
+  do{idx=Math.floor(Math.random()*QUOTES.length);}while(idx===lastQuoteIdx&&QUOTES.length>1);
+  setQuote(idx);
+  const btn=document.getElementById('quoteRefreshBtn');
+  btn.classList.remove('spin');
+  void btn.offsetWidth;
+  btn.classList.add('spin');
+}
+
+setQuote(getQuoteIndexForToday());
+
+renderAll();
+</script>
